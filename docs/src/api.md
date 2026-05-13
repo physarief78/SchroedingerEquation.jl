@@ -12,8 +12,14 @@ RealSpaceGrid1D
 Wavefunction1D
 AbstractBasis
 AbstractPotential
+AbstractTimeDependentPotential
 AbstractHamiltonian
 AbstractBoundaryCondition
+PeriodicBoundary
+HardWallBoundary
+AbsorbingBoundary
+AbstractWorkspace
+Hamiltonian1D
 ```
 
 ## Potentials
@@ -21,6 +27,8 @@ AbstractBoundaryCondition
 ```@docs
 HarmonicPotential
 SquareWellPotential
+OscillatingField
+CombinedPotential
 CustomPotential
 CustomTimeDependentPotential
 ManolopoulosCAP
@@ -33,6 +41,7 @@ build_hamiltonian
 solve_tise
 propagate_tdse
 propagate_ssfm
+step_crank_nicolson
 ```
 
 ## Workspaces
@@ -49,6 +58,8 @@ strip_units
 apply_units
 probability_density
 expectation_value
+build_momentum_operator
+normalize!
 ```
 
 ## Visualization

@@ -8,11 +8,40 @@ using Unitful
 using UnitfulAtomic
 
 # --- Abstract Types ---
+"""
+    AbstractBasis
+Abstract supertype for all spatial discretization bases.
+"""
 abstract type AbstractBasis end
+
+"""
+    AbstractPotential
+Abstract supertype for all potential energy functions.
+"""
 abstract type AbstractPotential end
+
+"""
+    AbstractTimeDependentPotential
+Abstract supertype for potentials that depend on time.
+"""
 abstract type AbstractTimeDependentPotential <: AbstractPotential end
+
+"""
+    AbstractHamiltonian
+Abstract supertype for Schrödinger operators.
+"""
 abstract type AbstractHamiltonian end
+
+"""
+    AbstractBoundaryCondition
+Abstract supertype for boundary conditions.
+"""
 abstract type AbstractBoundaryCondition end
+
+"""
+    AbstractWorkspace
+Abstract supertype for pre-allocated simulation workspaces.
+"""
 abstract type AbstractWorkspace end
 
 # --- Core Structs ---
@@ -50,12 +79,20 @@ end
 
 # --- Potentials ---
 
+"""
+    CustomPotential(f)
+Wraps a Julia function `f(x)` as a static potential.
+"""
 struct CustomPotential <: AbstractPotential
     f::Function
 end
 
 (p::CustomPotential)(x) = p.f(x)
 
+"""
+    CustomTimeDependentPotential(f)
+Wraps a Julia function `f(x, t)` as a time-dependent potential.
+"""
 struct CustomTimeDependentPotential <: AbstractTimeDependentPotential
     f::Function
 end
@@ -64,16 +101,32 @@ end
 
 # --- Hamiltonian ---
 
+"""
+    Hamiltonian1D(basis, potential, H_matrix)
+Represents a static 1D Hamiltonian operator.
+"""
 struct Hamiltonian1D{B<:AbstractBasis, P<:AbstractPotential, M<:AbstractMatrix} <: AbstractHamiltonian
     basis::B
     potential::P
     H_matrix::M
 end
 
+"""
+    PeriodicBoundary()
+Periodic boundary conditions (Born-von Karman).
+"""
 struct PeriodicBoundary <: AbstractBoundaryCondition end
+
+"""
+    HardWallBoundary()
+Hard-wall (Dirichlet) boundary conditions.
+"""
 struct HardWallBoundary <: AbstractBoundaryCondition end
 
-# The Production CAP
+"""
+    AbsorbingBoundary(L, strength=1.0)
+Complex Absorbing Potential (CAP) boundary of length `L`.
+"""
 struct AbsorbingBoundary <: AbstractBoundaryCondition
     L::Float64        # Length of the absorbing region
     strength::Float64 # Optional strength multiplier (default=1.0 for Manolopoulos optimal)
@@ -87,12 +140,20 @@ AbsorbingBoundary(L) = AbsorbingBoundary(L, 1.0)
 
 # --- Workspaces for Parallelism ---
 
+"""
+    TDSEWorkspace(A_fact, B, B_psi)
+Workspace for the Crank-Nicolson TDSE solver.
+"""
 struct TDSEWorkspace{F} <: AbstractWorkspace
     A_fact::F
     B::SparseMatrixCSC{ComplexF64, Int}
     B_psi::Vector{ComplexF64}
 end
 
+"""
+    SSFMWorkspace(P_plan, P_inv_plan, U_V, U_T)
+Workspace for the Split-Step Fourier Method solver.
+"""
 struct SSFMWorkspace{P, Pi} <: AbstractWorkspace
     P_plan::P
     P_inv_plan::Pi
