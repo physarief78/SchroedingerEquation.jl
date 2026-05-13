@@ -67,11 +67,8 @@ jobs:
       - name: Install X11 dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libgl1-mesa-glx libxrender1 libxext6 libxfixes3 libxi6 libxrandr2
+          sudo apt-get install -y libgl1 libxrender1 libxext6 libxfixes3 libxi6 libxrandr2
       - uses: julia-actions/julia-buildpkg@v1
-      - name: Build and deploy
+      - uses: julia-actions/julia-docdeploy@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DISPLAY: :99
-        run: |
-          xvfb-run julia --project=docs/ docs/make.jl
