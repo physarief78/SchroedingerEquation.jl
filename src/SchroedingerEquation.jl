@@ -105,8 +105,22 @@ include("potentials.jl")
 include("utils.jl")
 include("tise.jl")
 include("tdse.jl")
-include("visualize.jl")
-include("live_visualize.jl")
+include("visualize.jl") # CairoMakie (Headless-friendly)
+
+# Only load GLMakie interactive visualization if a display is available
+if haskey(ENV, "DISPLAY") || haskey(ENV, "WAYLAND_DISPLAY") || Sys.iswindows() || Sys.isapple()
+    try
+        include("live_visualize.jl")
+    catch e
+        @warn "Could not load interactive GLMakie visualization: $e"
+    end
+else
+    # Provide a stub or just skip. For docs, skipping is usually fine.
+    # But let's define a stub to avoid UndefVarError in exports
+    function live_evolution(args...; kwargs...)
+        @warn "live_evolution requires a display/X11 session. It is not available in this environment."
+    end
+end
 
 # --- Exports ---
 export AbstractBasis, AbstractPotential, AbstractTimeDependentPotential, AbstractHamiltonian, AbstractBoundaryCondition

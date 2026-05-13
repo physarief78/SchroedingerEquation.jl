@@ -35,6 +35,25 @@ jobs:
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
+  python_test:
+    name: Python Integration Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python_version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install numpy matplotlib juliacall
+          pip install .
+      - name: Run Python Tests
+        run: python test/test_python.py
+
   docs:
     name: Documentation
     runs-on: ubuntu-latest
@@ -45,7 +64,14 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
+      - name: Install X11 dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-glx libxrender1 libxext6 libxfixes3 libxi6 libxrandr2
       - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-docdeploy@v1
+      - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISPLAY: :99
+        run: |
+          xvfb-run julia --project=docs/ docs/make.jl
