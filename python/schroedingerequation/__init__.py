@@ -24,7 +24,7 @@ except Exception:
     try:
         jl.eval(jl.Meta.parse("import SchroedingerEquation"))
     except:
-        jl.Pkg.develop(jl.PackageSpec(path=project_path))
+        jl.Pkg.develop(jl.Pkg.PackageSpec(path=project_path))
         jl.eval(jl.Meta.parse("import SchroedingerEquation"))
         
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))

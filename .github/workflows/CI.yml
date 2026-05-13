@@ -51,8 +51,10 @@ jobs:
         run: |
           pip install numpy matplotlib juliacall
           pip install .
-          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=. -e 'using Pkg; Pkg.resolve(); Pkg.instantiate(); Pkg.precompile()'
       - name: Run Python Tests
+        env:
+          PYTHON_JULIACALL_PROJECT: "@."
         run: python test/test_python.py
 
   docs:
@@ -70,7 +72,9 @@ jobs:
           julia --project=docs -e '
             using Pkg
             Pkg.develop(PackageSpec(path=pwd()))
-            Pkg.instantiate()'
+            Pkg.resolve()
+            Pkg.instantiate()
+            Pkg.precompile()'
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
