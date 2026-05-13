@@ -53,8 +53,6 @@ jobs:
           pip install .
           julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Run Python Tests
-        env:
-          PYTHON_JULIACALL_PROJECT: "."
         run: python test/test_python.py
 
   docs:

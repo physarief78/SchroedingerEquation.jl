@@ -1,5 +1,6 @@
 using Documenter
 using SchroedingerEquation
+using LinearAlgebra
 
 makedocs(
     sitename = "SchroedingerEquation.jl",
