@@ -13,11 +13,20 @@ try:
     jl.eval(jl.Meta.parse("import SchroedingerEquation"))
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
 except Exception:
-    # If it fails, activate the local project environment
+    # If it fails, activate the local project environment and develop the package
     project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     jl.eval(jl.Meta.parse("import Pkg"))
+    
+    # In CI, we need to make sure the package is actually in the environment
     jl.Pkg.activate(project_path)
-    jl.eval(jl.Meta.parse("import SchroedingerEquation"))
+    
+    # If not yet available, develop the current directory
+    try:
+        jl.eval(jl.Meta.parse("import SchroedingerEquation"))
+    except:
+        jl.Pkg.develop(jl.PackageSpec(path=project_path))
+        jl.eval(jl.Meta.parse("import SchroedingerEquation"))
+        
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
 
 # Helper to convert numpy arrays to Julia arrays if needed
