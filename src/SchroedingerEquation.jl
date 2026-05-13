@@ -178,13 +178,13 @@ function live_evolution(args...; kwargs...)
 end
 
 # --- Exports ---
-export AbstractBasis, AbstractPotential, AbstractTimeDependentPotential, AbstractHamiltonian, AbstractBoundaryCondition
+export AbstractBasis, AbstractPotential, AbstractTimeDependentPotential, AbstractHamiltonian, AbstractBoundaryCondition, AbstractWorkspace
 export PeriodicBoundary, HardWallBoundary, AbsorbingBoundary
 export RealSpaceGrid1D, Wavefunction1D, CustomPotential, CustomTimeDependentPotential, Hamiltonian1D
 export HarmonicPotential, SquareWellPotential, OscillatingField, CombinedPotential, ManolopoulosCAP
 export probability_density, expectation_value, strip_units, apply_units
 export build_hamiltonian, solve_tise, build_momentum_operator
-export propagate_tdse, propagate_ssfm, animate_evolution, live_evolution
+export propagate_tdse, propagate_ssfm, step_crank_nicolson, animate_evolution, live_evolution
 export TDSEWorkspace, SSFMWorkspace
 
 end # module

@@ -59,7 +59,7 @@ apply_units
 probability_density
 expectation_value
 build_momentum_operator
-normalize!
+LinearAlgebra.normalize!
 ```
 
 ## Visualization
