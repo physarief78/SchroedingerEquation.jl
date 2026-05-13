@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "schroedingerequation"
+version = "0.2.0"
+authors = [
+  { name="Muhammad Arief Mulyana" },
+]
+description = "Python interface for SchroedingerEquation.jl"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "juliacall>=0.9.13",
+    "numpy>=1.20",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/muharief/SchroedingerEquation.jl"
+"Bug Tracker" = "https://github.com/muharief/SchroedingerEquation.jl/issues"
+
+[tool.setuptools.package-dir]
+"" = "python"
+
+[tool.setuptools.packages.find]
+where = ["python"]
