@@ -1233,7 +1233,7 @@ version = "3.7.2"
 
 [[deps.SchroedingerEquation]]
 deps = ["CairoMakie", "FFTW", "KrylovKit", "LinearAlgebra", "Makie", "MakieCore", "SparseArrays", "Test", "Unitful", "UnitfulAtomic"]
-path = ".."
+path = "C:\\Users\\arief\\OneDrive - MIPA UNPAD\\Folder 2026\\Julia Project\\SchroedingerEquation.jl"
 uuid = "e64416c6-b05b-4119-8075-dafba985e307"
 version = "0.2.0"
 
