@@ -19,12 +19,16 @@ except Exception:
     
     # In CI, we need to make sure the package is actually in the environment
     jl.Pkg.activate(project_path)
+    jl.Pkg.instantiate()
     
-    # If not yet available, develop the current directory
+    # If not yet available, try to resolve and import
     try:
         jl.eval(jl.Meta.parse("import SchroedingerEquation"))
-    except:
-        jl.Pkg.develop(jl.Pkg.PackageSpec(path=project_path))
+    except Exception as e:
+        print(f"Failed to import SchroedingerEquation after activation: {e}")
+        # Last resort: try to resolve and build
+        jl.Pkg.resolve()
+        jl.Pkg.build("SchroedingerEquation")
         jl.eval(jl.Meta.parse("import SchroedingerEquation"))
         
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
