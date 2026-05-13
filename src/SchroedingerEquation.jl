@@ -107,19 +107,13 @@ include("tise.jl")
 include("tdse.jl")
 include("visualize.jl") # CairoMakie (Headless-friendly)
 
-# Only load GLMakie interactive visualization if a display is available
-if haskey(ENV, "DISPLAY") || haskey(ENV, "WAYLAND_DISPLAY") || Sys.iswindows() || Sys.isapple()
-    try
-        include("live_visualize.jl")
-    catch e
-        @warn "Could not load interactive GLMakie visualization: $e"
-    end
-else
-    # Provide a stub or just skip. For docs, skipping is usually fine.
-    # But let's define a stub to avoid UndefVarError in exports
-    function live_evolution(args...; kwargs...)
-        @warn "live_evolution requires a display/X11 session. It is not available in this environment."
-    end
+# live_evolution is defined here but implemented in the GLMakieExt extension
+"""
+    live_evolution(...)
+Interactive GLMakie visualization. Requires `using GLMakie`.
+"""
+function live_evolution(args...; kwargs...)
+    @warn "live_evolution requires GLMakie. Please run `using GLMakie` first."
 end
 
 # --- Exports ---
