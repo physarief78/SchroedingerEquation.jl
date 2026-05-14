@@ -1,4 +1,4 @@
-# 8. Distributed Ensemble
+# Distributed Ensemble
 
 For massive scale simulations (like running on a supercomputing cluster), standard multi-threading isn't enough. `SchroedingerEquation.jl` works seamlessly with Julia's `Distributed` standard library, allowing you to run ensemble simulations across multiple processes and even multiple machines over a network.
 

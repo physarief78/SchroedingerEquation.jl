@@ -1,4 +1,4 @@
-# 1. Free Space Dispersion
+# Free Space Dispersion
 
 This first example demonstrates the absolute basics: how to set up a spatial grid, initialize a Gaussian wavepacket, and propagate it in free space (where the potential $V = 0$) using the Time-Dependent Schrödinger Equation (TDSE).
 

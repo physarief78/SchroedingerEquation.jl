@@ -1,4 +1,4 @@
-# 4. Absorbing Boundaries
+# Absorbing Boundaries
 
 In open quantum systems, particles can escape the simulated region. Simulating this requires special boundary conditions that absorb the wavepacket without reflecting it back. In this tutorial, we use a Complex Absorbing Potential (CAP).
 

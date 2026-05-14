@@ -1,4 +1,4 @@
-# 6. Interactive Scattering
+# Interactive Scattering
 
 One of the standout features of `SchroedingerEquation.jl` is its ability to render **interactive, live-updating** simulations using `GLMakie`.
 

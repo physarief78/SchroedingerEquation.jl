@@ -1,4 +1,4 @@
-# 5. Ultrafast Excitation
+# Ultrafast Excitation
 
 Simulating time-dependent potentials (like a laser pulse hitting an electron in a trap) is a core capability of `SchroedingerEquation.jl`.
 

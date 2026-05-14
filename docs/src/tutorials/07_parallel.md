@@ -1,4 +1,4 @@
-# 7. Parallel Parameter Sweep
+# Parallel Parameter Sweep
 
 In quantum mechanics, we often need to calculate probabilities over a range of parameters (like computing the transmission probability of a particle across different incident energies). 
 

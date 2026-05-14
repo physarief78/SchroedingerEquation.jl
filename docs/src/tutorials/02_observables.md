@@ -1,4 +1,4 @@
-# 2. Phase and Observables
+# Phase and Observables
 
 In this tutorial, we will explore how to track quantum observables (like position $\langle x \rangle$ and momentum $\langle p \rangle$) over time while a wavepacket evolves in a potential trap.
 

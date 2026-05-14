@@ -1,4 +1,4 @@
-# 3. Quantum Tunneling
+# Quantum Tunneling
 
 In this example, we tackle a phenomenon that is impossible in classical mechanics: Quantum Tunneling. We will fire a wavepacket at a rectangular potential barrier. The kinetic energy of the wavepacket is strictly lower than the barrier's potential height. Classically, it should completely bounce off. Let's see what happens quantum mechanically.
 
