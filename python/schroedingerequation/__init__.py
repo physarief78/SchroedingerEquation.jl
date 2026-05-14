@@ -8,21 +8,23 @@ import numpy as np
 
 # Initialize Julia environment
 try:
+    # Check if we are in a local dev environment first
+    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    project_toml = os.path.join(project_path, "Project.toml")
+    
+    if os.path.exists(project_toml):
+        # We are running from the source tree or it's accessible.
+        # Add the project directory to Julia's LOAD_PATH so it can find SchroedingerEquation
+        project_path_jl = project_path.replace("\\", "/")
+        jl.eval(f'if !("{project_path_jl}" in LOAD_PATH) push!(LOAD_PATH, "{project_path_jl}") end')
+    
     jl.eval(jl.Meta.parse("using SchroedingerEquation"))
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
 except Exception:
-    # If it fails, try to install it from the repository
+    # If it fails (e.g. not installed and not in local dev tree), try to install it
     jl.eval(jl.Meta.parse("import Pkg"))
-    
-    # Try to see if we are in a local dev environment first
-    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    if os.path.exists(os.path.join(project_path, "Project.toml")):
-        jl.Pkg.activate(project_path)
-        jl.Pkg.instantiate()
-    else:
-        # Otherwise, install from GitHub
-        print("SchroedingerEquation.jl not found. Attempting to install from GitHub...")
-        jl.Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")
+    print("SchroedingerEquation.jl not found in LOAD_PATH. Attempting to install from GitHub...")
+    jl.Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")
     
     jl.eval(jl.Meta.parse("using SchroedingerEquation"))
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
