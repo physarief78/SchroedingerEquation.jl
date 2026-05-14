@@ -51,8 +51,10 @@ jobs:
         run: |
           pip install numpy matplotlib juliacall
           pip install .
-          julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+          julia --project=. -e 'using Pkg; Pkg.resolve(); Pkg.instantiate(); Pkg.precompile()'
       - name: Run Python Tests
+        env:
+          PYTHON_JULIACALL_EXE: julia
         run: python test/test_python.py
 
   docs:

@@ -19,6 +19,7 @@ except Exception:
     
     # In CI, we need to make sure the package is actually in the environment
     jl.Pkg.activate(project_path)
+    jl.Pkg.resolve()
     jl.Pkg.instantiate()
     
     # If not yet available, try to resolve and import
