@@ -56,6 +56,8 @@ jobs:
       - name: Run Python Tests
         env:
           JULIAPKG_EXE: julia
+          PYTHONJULIACALL_PROJECT: "@."
+          PYTHONJULIACALL_HANDLE_SIGNALS: "yes"
         run: python test/test_python.py
 
   docs:

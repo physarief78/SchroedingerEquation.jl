@@ -1,0 +1,1 @@
+using Pkg; Pkg.activate("."); using SchroedingerEquation, Unitful; basis = RealSpaceGrid1D(-10.0u"nm", 10.0u"nm", 1000); potential = HarmonicPotential(1.0u"eV/nm^2"); ham = build_hamiltonian(basis, potential; hbar=1.0u"hbar", m=1.0u"me"); energies, wavefunctions = solve_tise(ham, 5); println("Ground state energy: ", energies[1], " (Atomic Units)")

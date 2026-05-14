@@ -15,7 +15,12 @@ By leveraging the Julia language's speed and ecosystem, `SchroedingerEquation.jl
 - **Advanced Boundaries**: Full support for Periodic boundaries, Hard Walls, and Manolopoulos Complex Absorbing Potentials (CAP) for accurately simulating open quantum systems (like electrons escaping a detector).
 - **Visualization**: Beautiful interactive live feedback and professional GIF/MP4 animations seamlessly integrated via `Makie.jl` and `CairoMakie`.
 
+## Theory & Methods
+
+For a deeper dive into the physics, unit conversions, and mathematical formulation of the numerical methods (like Finite Difference and SSFM) powering the solver, please refer to the [Theory & Methods](theory.md) section in the Manual.
+
 ## Getting Started
+
 
 Let's look at a very simple example: solving for the ground state energy of an electron in a harmonic trap. Notice how we use physical units explicitly!
 

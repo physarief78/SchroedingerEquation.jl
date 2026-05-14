@@ -12,6 +12,7 @@ makedocs(
             "Basis & Grids" => "basis.md",
             "Hamiltonians" => "hamiltonian.md",
             "Solvers" => "solvers.md",
+            "Theory & Methods" => "theory.md",
         ],
         "Python Support" => "python.md",
         "Tutorials" => [

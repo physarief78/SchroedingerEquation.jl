@@ -51,6 +51,11 @@ energies, wavefunctions = solve_tise(ham, 5)
 println("Ground state energy: ", energies[1], " (Atomic Units)")
 ```
 
+**Output:**
+```console
+Ground state energy: 1.8990771391438397e-10 (Atomic Units)
+```
+
 ### High-Performance Parallel Sweep
 ```julia
 using SchroedingerEquation
@@ -95,6 +100,12 @@ x = np.array(basis.x)
 plt.plot(x, np.abs(wavefunctions[:, 0])**2)
 plt.show()
 ```
+
+**Output:**
+```console
+Ground state energy: 5.800139365314005e-05
+```
+![Python Plot](docs/src/assets/python_output.png)
 
 ---
 
