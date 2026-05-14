@@ -2,20 +2,22 @@
 
 Welcome to the documentation for **SchroedingerEquation.jl**, a high-performance, rigorous, and unit-aware solver for the 1D Schrödinger equation. 
 
-This package is designed for researchers and students who need robust simulation tools for quantum mechanics, from simple eigenstates to ultrafast time-dependent dynamics.
+This package was born out of the need for a simulation tool that bridges the gap between educational toy models and hardcore research applications. It is designed for researchers, computational physicists, and students who need robust simulation tools for quantum mechanics, ranging from calculating simple bound states to simulating ultrafast time-dependent laser excitations.
 
-## Features
+By leveraging the Julia language's speed and ecosystem, `SchroedingerEquation.jl` allows you to define complex potentials and wavepackets and instantly solve for their eigenstates or propagate them through time without sacrificing performance.
 
-- **Unit Support**: Native integration with `Unitful.jl` and `UnitfulAtomic.jl` ensures you never drop a factor of $\hbar$.
+## Core Features
+
+- **Strict Unit Support**: Native integration with `Unitful.jl` and `UnitfulAtomic.jl` ensures you never drop a factor of $\hbar$, miscalculate a mass, or get your electron-volts mixed up with your Joules.
 - **Fast Solvers**:
-    - **TISE (Time-Independent)**: Extremely fast $O(N)$ Eigen-solvers using `SymTridiagonal` matrices and `KrylovKit`.
-    - **TDSE (Time-Dependent)**: Unitary Crank-Nicolson and ultra-fast Split-Step Fourier Method (SSFM) for propagating wavepackets.
-- **Boundaries**: Support for Periodic, Hard Wall, and Manolopoulos Complex Absorbing Potentials (CAP) for open quantum systems.
-- **Visualization**: Interactive live feedback and professional mp4 animations seamlessly integrated via `Makie.jl`.
+    - **TISE (Time-Independent)**: Extremely fast $O(N)$ Eigen-solvers using `SymTridiagonal` matrices and `KrylovKit`. Calculate hundreds of bound states in milliseconds.
+    - **TDSE (Time-Dependent)**: Stable Unitary Crank-Nicolson algorithms and ultra-fast Split-Step Fourier Methods (SSFM) for seamlessly propagating wavepackets through time.
+- **Advanced Boundaries**: Full support for Periodic boundaries, Hard Walls, and Manolopoulos Complex Absorbing Potentials (CAP) for accurately simulating open quantum systems (like electrons escaping a detector).
+- **Visualization**: Beautiful interactive live feedback and professional GIF/MP4 animations seamlessly integrated via `Makie.jl` and `CairoMakie`.
 
 ## Getting Started
 
-Let's solve for the ground state energy of an electron in a harmonic trap:
+Let's look at a very simple example: solving for the ground state energy of an electron in a harmonic trap. Notice how we use physical units explicitly!
 
 ```julia
 using SchroedingerEquation
@@ -45,9 +47,9 @@ Ground state energy: 4.532029953521174e-5 eV
 
 ## Installation
 
-You can install `SchroedingerEquation.jl` directly via the Julia package manager:
+Because the package is currently pending registration in the Julia General Registry, you must install it directly from the GitHub repository URL using the Julia package manager:
 
 ```julia
 using Pkg
-Pkg.add("SchroedingerEquation")
+Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")
 ```
