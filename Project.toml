@@ -20,3 +20,14 @@ GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 
 [extensions]
 GLMakieExt = "GLMakie"
+
+[compat]
+julia = "1.10"
+CairoMakie = "0.15"
+FFTW = "1"
+KrylovKit = "0.10"
+Makie = "0.24"
+MakieCore = "0.10"
+Unitful = "1"
+UnitfulAtomic = "1"
+GLMakie = "0.15"
