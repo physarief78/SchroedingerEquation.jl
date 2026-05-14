@@ -21,4 +21,5 @@ makedocs(
 
 deploydocs(
     repo = "github.com/physarief78/SchroedingerEquation.jl.git",
+    devbranch = "main"
 )
