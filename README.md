@@ -1,7 +1,7 @@
 # SchroedingerEquation.jl
 
-[![Build Status](https://github.com/muharief/SchroedingerEquation.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/muharief/SchroedingerEquation.jl/actions/workflows/CI.yml)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://muharief.github.io/SchroedingerEquation.jl/stable/)
+[![Build Status](https://github.com/physarief78/SchroedingerEquation.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/physarief78/SchroedingerEquation.jl/actions/workflows/CI.yml)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://physarief78.github.io/SchroedingerEquation.jl/stable/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **SchroedingerEquation.jl** is a high-performance, production-grade Julia package for solving the 1D time-independent and time-dependent Schrödinger equation. It is designed for researchers who need numerical rigor, physical unit consistency, and high-performance scalability.
