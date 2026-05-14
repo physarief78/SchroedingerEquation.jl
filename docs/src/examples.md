@@ -1,53 +1,102 @@
-# Examples
+# Tutorials & Examples
 
 Explore common physics problems solved with `SchroedingerEquation.jl`.
 
-## 1. Quantum Tunneling
+## 1. Free Space Dispersion
 
-Simulate a wavepacket hitting a square potential barrier.
+This example demonstrates how to set up the spatial grid, initialize a Gaussian wavepacket, and propagate it in free space (V = 0) using the Time-Dependent Schrödinger Equation (TDSE). 
 
 ```julia
 using SchroedingerEquation
-using Unitful
+using LinearAlgebra
+using CairoMakie
 
-# Setup
-basis = RealSpaceGrid1D(-20.0u"nm", 20.0u"nm", 2000)
-barrier = SquareWellPotential(5.0u"eV", 2.0u"nm") # Actually a barrier if V0 > 0 in build_hamiltonian context? 
-# Note: Check SquareWellPotential implementation for sign.
+# ==========================================
+# 01. Setup the Spatial Grid
+# ==========================================
+basis = RealSpaceGrid1D(-50.0, 50.0, 1000)
 
-# Initial state: Gaussian packet with momentum
-psi0 = gaussian_packet(basis, -10.0u"nm", 1.0u"nm", 5.0u"eV") 
+# ==========================================
+# 02. Build the Hamiltonian
+# ==========================================
+# Free particle (V = 0)
+potential = CustomPotential(x -> 0.0)
+ham = build_hamiltonian(basis, potential)
 
-# Propagate
-ham = build_hamiltonian(basis, barrier; boundary=AbsorbingBoundary(5.0u"nm"))
-animate_evolution(psi0, ham, 100.0u"fs", 0.5u"fs", "tunneling.mp4")
+# ==========================================
+# 03. Create Initial Wavepacket
+# ==========================================
+x0 = -20.0
+sigma = 2.0
+p0 = 2.0
+psi0_vals = [exp(-(x - x0)^2 / (2 * sigma^2)) * exp(im * p0 * x) for x in basis.x]
+psi0 = Wavefunction1D(ComplexF64.(psi0_vals), basis)
+normalize!(psi0)
+
+# ==========================================
+# 04. Time Evolution
+# ==========================================
+t_total = 20.0
+dt = 0.02
+history = propagate_tdse(psi0, ham, t_total, dt; save_stride=20)
+
+# ==========================================
+# 05. Visualize
+# ==========================================
+fig = Figure(size=(800, 400))
+ax = Axis(fig[1,1], title="Free Particle Dispersion", xlabel="x", ylabel="|ψ|²")
+lines!(ax, basis.x, abs2.(history[1].psi), label="t=0")
+lines!(ax, basis.x, abs2.(history[end].psi), label="t=end")
+axislegend(ax)
 ```
 
-## 2. Multi-threaded Parameter Sweep
+**Output:**
 
-Calculate the transmission coefficient for 50 different barrier heights in parallel.
+![Free Particle Dispersion](assets/01_free_space.png)
+
+As expected, the wavepacket travels to the right and its width increases (disperses) over time!
+
+---
+
+## 2. Quantum Tunneling
+
+In this example, we fire a wavepacket at a rectangular potential barrier. The energy of the wavepacket is lower than the barrier height, so classically it should bounce off. However, quantum mechanics allows it to tunnel through.
 
 ```julia
-using Base.Threads
+using SchroedingerEquation
+using LinearAlgebra
+using CairoMakie
 
-heights = range(1.0, 10.0, length=50) .* 1.0u"eV"
-results = zeros(50)
+# Setup
+basis = RealSpaceGrid1D(-50.0, 50.0, 1000)
 
-Threads.@threads for i in 1:50
-    # Setup and solve...
-end
+# A barrier in the center (positive potential height 15)
+barrier = SquareWellPotential(2.0, -15.0; x0=0.0) 
+ham = build_hamiltonian(basis, barrier)
+
+# Initial state: A moving Gaussian wavepacket starting on the left
+x0 = -25.0
+sigma = 2.0
+p0 = 5.0 # E = p^2/2 = 12.5 < 15.0 (Barrier height) -> Tunneling regime
+psi0_vals = [exp(-(x - x0)^2 / (2 * sigma^2)) * exp(im * p0 * x) for x in basis.x]
+psi0 = Wavefunction1D(ComplexF64.(psi0_vals), basis)
+normalize!(psi0)
+
+# TDSE: Tunneling animation
+t_total = 12.0
+dt = 0.02
+history = propagate_tdse(psi0, ham, t_total, dt; save_stride=5)
+
+# Visualization
+animate_evolution(history, barrier; filename="03_tunneling.mp4", fps=30, title="Tunneling Effect")
 ```
 
-## 3. Python Integration
+**Output:**
 
-Combine Julia solvers with Python's data analysis ecosystem.
+![Quantum Tunneling](assets/03_tunneling.mp4)
 
-```python
-import schroedingerequation as se
-import numpy as np
+Notice how a small fraction of the wavepacket successfully emerges on the right side of the barrier!
 
-basis = se.RealSpaceGrid1D(se.unit("-5.0u\"nm\""), se.unit("5.0u\"nm\""), 500)
-energies, wavefunctions = se.solve_tise(se.build_hamiltonian(basis, se.HarmonicPotential(se.unit("1.0u\"eV/nm^2\""))), 3)
-```
+---
 
-For more detailed examples, check the `examples/` directory in the repository.
+For more advanced examples, such as multi-threading, python integration, or complex absorbing potentials, check out the `examples/` directory in the repository!
