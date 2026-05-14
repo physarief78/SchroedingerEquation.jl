@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Parallel Parameter Sweep · SchroedingerEquation.jl</title><meta name="title" content="Parallel Parameter Sweep · SchroedingerEquation.jl"/><meta property="og:title" content="Parallel Parameter Sweep · SchroedingerEquation.jl"/><meta property="twitter:title" content="Parallel Parameter Sweep · SchroedingerEquation.jl"/><meta name="description" content="Documentation for SchroedingerEquation.jl."/><meta property="og:description" content="Documentation for SchroedingerEquation.jl."/><meta property="twitter:description" content="Documentation for SchroedingerEquation.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">SchroedingerEquation.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Manual</span><ul><li><a class="tocitem" href="../../basis/">Basis &amp; Grids</a></li><li><a class="tocitem" href="../../hamiltonian/">Hamiltonians</a></li><li><a class="tocitem" href="../../solvers/">Solvers</a></li></ul></li><li><a class="tocitem" href="../../python/">Python Support</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../01_free_space/">Free Space Dispersion</a></li><li><a class="tocitem" href="../02_observables/">Phase and Observables</a></li><li><a class="tocitem" href="../03_tunneling/">Quantum Tunneling</a></li><li><a class="tocitem" href="../04_absorbing/">Absorbing Boundaries</a></li><li><a class="tocitem" href="../05_excitation/">Ultrafast Excitation</a></li><li><a class="tocitem" href="../06_interactive/">Interactive Scattering</a></li><li class="is-active"><a class="tocitem" href>Parallel Parameter Sweep</a></li><li><a class="tocitem" href="../08_distributed/">Distributed Ensemble</a></li></ul></li><li><a class="tocitem" href="../../api/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Parallel Parameter Sweep</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Parallel Parameter Sweep</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/physarief78/SchroedingerEquation.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/physarief78/SchroedingerEquation.jl/blob/main/docs/src/tutorials/07_parallel.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Parallel-Parameter-Sweep"><a class="docs-heading-anchor" href="#Parallel-Parameter-Sweep">Parallel Parameter Sweep</a><a id="Parallel-Parameter-Sweep-1"></a><a class="docs-heading-anchor-permalink" href="#Parallel-Parameter-Sweep" title="Permalink"></a></h1><p>In quantum mechanics, we often need to calculate probabilities over a range of parameters (like computing the transmission probability of a particle across different incident energies). </p><p>Because these simulations are completely independent, <code>SchroedingerEquation.jl</code> natively supports multi-threading out-of-the-box using Julia&#39;s <code>@threads</code> macro!</p><h3 id="Setup"><a class="docs-heading-anchor" href="#Setup">Setup</a><a id="Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Setup" title="Permalink"></a></h3><p>We set up a barrier with a width of <code>2.0 nm</code> and a height of <code>0.5 eV</code>. We will sweep over incident particle energies from <code>0.1 eV</code> to <code>1.0 eV</code>.</p><pre><code class="language-julia hljs">using SchroedingerEquation
+using Unitful
+using Base.Threads
+using LinearAlgebra
+
+# 1. Setup Common Basis
+basis = RealSpaceGrid1D(-50.0u&quot;nm&quot;, 50.0u&quot;nm&quot;, 2000)
+
+# 2. Define the Barrier
+barrier_width = 2.0u&quot;nm&quot;
+barrier_height = 0.5u&quot;eV&quot;
+potential = SquareWellPotential(barrier_width, -barrier_height; x0=0.0u&quot;nm&quot;)
+
+# 3. Parameter Sweep: Incident Energies
+energies = range(0.1, 1.0, length=24)u&quot;eV&quot;
+results = zeros(length(energies))
+
+println(&quot;Starting parallel sweep on &quot;, nthreads(), &quot; threads...&quot;)</code></pre><h3 id="The-Multi-threaded-Loop"><a class="docs-heading-anchor" href="#The-Multi-threaded-Loop">The Multi-threaded Loop</a><a id="The-Multi-threaded-Loop-1"></a><a class="docs-heading-anchor-permalink" href="#The-Multi-threaded-Loop" title="Permalink"></a></h3><p>By wrapping our <code>for</code> loop in <code>@threads</code>, Julia automatically distributes the workload across the available CPU cores.</p><p>Inside the loop, we use the <code>SSFMWorkspace</code> to pre-allocate memory and call the ultra-fast <code>propagate_ssfm</code> solver. Because each thread uses its own local workspace, this approach is perfectly thread-safe and extremely fast.</p><pre><code class="language-julia hljs">@threads for i in 1:length(energies)
+    E = energies[i]
+    
+    # Setup initial wavepacket with energy E
+    m = 1.0u&quot;me&quot;
+    hbar = 1.0u&quot;hbar&quot;
+    p0 = sqrt(2 * m * E)
+    
+    x0 = -20.0u&quot;nm&quot;
+    sigma = 2.0u&quot;nm&quot;
+    psi_vals = [exp(-(x - strip_units(x0))^2 / (2 * strip_units(sigma)^2)) * exp(im * strip_units(p0) * x) for x in basis.x]
+    psi0 = Wavefunction1D(ComplexF64.(psi_vals), basis)
+    normalize!(psi0)
+    
+    dt = 0.05u&quot;fs&quot;
+    t_total = 100.0u&quot;fs&quot;
+    
+    # We create a local workspace for this thread
+    ws = SSFMWorkspace(psi0, potential, dt; m=m, hbar=hbar)
+    
+    # Propagate (don&#39;t keep history to save memory)
+    history = propagate_ssfm(psi0, potential, t_total, dt; 
+                             workspace=ws, m=m, hbar=hbar, keep_history=true)
+    
+    # Calculate Transmission: Fraction of norm on the right side (x &gt; 5.0nm)
+    final_psi = history[end].psi
+    transmission = sum(abs2, final_psi[basis.x .&gt; strip_units(5.0u&quot;nm&quot;)]) * basis.dx
+    results[i] = transmission
+    
+    println(&quot;Thread $(threadid()): Finished E = $E, T = $(round(transmission, digits=3))&quot;)
+end</code></pre><h3 id="Visualization"><a class="docs-heading-anchor" href="#Visualization">Visualization</a><a id="Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Visualization" title="Permalink"></a></h3><p>Once all threads have finished, we plot the transmission probabilities.</p><pre><code class="language-julia hljs"># 4. Visualization of Results
+using CairoMakie
+fig = Figure(size=(800, 600))
+ax = Axis(fig[1, 1], title=&quot;Tunneling Probability vs Energy&quot;,
+          xlabel=&quot;Energy (eV)&quot;, ylabel=&quot;Transmission Coefficient&quot;)
+
+lines!(ax, ustrip.(energies), results, color=:blue, linewidth=3)
+scatter!(ax, ustrip.(energies), results, color=:red)
+
+# Add barrier height indicator
+vlines!(ax, [ustrip(barrier_height)], color=:black, linestyle=:dash, label=&quot;Barrier Height&quot;)
+
+save(&quot;examples/results/07_tunneling_sweep.png&quot;, fig)
+println(&quot;Sweep complete. Results saved to examples/results/07_tunneling_sweep.png&quot;)</code></pre><p><strong>Console Output:</strong></p><pre><code class="language-text hljs">Starting parallel sweep on 1 threads...
+Thread 1: Finished E = 0.1 eV, T = 0.0
+Thread 1: Finished E = 0.1391304347826087 eV, T = 0.0
+...
+Thread 1: Finished E = 0.9608695652173913 eV, T = 0.0
+Thread 1: Finished E = 1.0 eV, T = 0.0
+Sweep complete. Results saved to examples/results/07_tunneling_sweep.png</code></pre><p><em>(Note: The example above was run with a single thread locally, but to utilize multi-threading, simply start julia with <code>julia -t auto</code>!)</em></p><p><strong>Resulting Plot:</strong></p><p><img src="../../assets/07_tunneling_sweep.png" alt="Parallel Sweep"/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../06_interactive/">« Interactive Scattering</a><a class="docs-footer-nextpage" href="../08_distributed/">Distributed Ensemble »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Thursday 14 May 2026 10:35">Thursday 14 May 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
