@@ -7,30 +7,24 @@ from juliacall import Main as jl
 import numpy as np
 
 # Initialize Julia environment
-# This will install SchroedingerEquation.jl in a private Julia environment if needed
 try:
-    # Use jl.eval with jl.Meta.parse to correctly evaluate strings
-    jl.eval(jl.Meta.parse("import SchroedingerEquation"))
+    jl.eval(jl.Meta.parse("using SchroedingerEquation"))
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
 except Exception:
-    # If it fails, activate the local project environment and develop the package
-    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # If it fails, try to install it from the repository
     jl.eval(jl.Meta.parse("import Pkg"))
     
-    # In CI, we need to make sure the package is actually in the environment
-    jl.Pkg.activate(project_path)
-    jl.Pkg.instantiate()
+    # Try to see if we are in a local dev environment first
+    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if os.path.exists(os.path.join(project_path, "Project.toml")):
+        jl.Pkg.activate(project_path)
+        jl.Pkg.instantiate()
+    else:
+        # Otherwise, install from GitHub
+        print("SchroedingerEquation.jl not found. Attempting to install from GitHub...")
+        jl.Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")
     
-    # If not yet available, try to resolve and import
-    try:
-        jl.eval(jl.Meta.parse("import SchroedingerEquation"))
-    except Exception as e:
-        print(f"Failed to import SchroedingerEquation after activation: {e}")
-        # Last resort: try to resolve and build
-        jl.Pkg.resolve()
-        jl.Pkg.build("SchroedingerEquation")
-        jl.eval(jl.Meta.parse("import SchroedingerEquation"))
-        
+    jl.eval(jl.Meta.parse("using SchroedingerEquation"))
     se = jl.eval(jl.Meta.parse("SchroedingerEquation"))
 
 # Helper to convert numpy arrays to Julia arrays if needed
