@@ -56,6 +56,7 @@ jobs:
       - name: Run Python Tests
         env:
           PYTHON_JULIACALL_EXE: julia
+          PYTHON_JULIACALL_PROJECT: "."
         run: python test/test_python.py
 
   docs:
