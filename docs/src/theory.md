@@ -7,22 +7,22 @@ This document details the underlying physical theory and the numerical methods i
 ### Time-Independent Schrödinger Equation (TISE)
 The stationary states of a quantum system are governed by the Time-Independent Schrödinger Equation:
 
-$$ \hat{H} \psi_n(x) = E_n \psi_n(x) $$
+$$\hat{H} \psi_n(x) = E_n \psi_n(x)$$
 
 where $\hat{H}$ is the Hamiltonian operator:
 
-$$ \hat{H} = -\frac{\hbar^2}{2m} \frac{\partial^2}{\partial x^2} + V(x) $$
+$$\hat{H} = -\frac{\hbar^2}{2m} \frac{\partial^2}{\partial x^2} + V(x)$$
 
 $E_n$ is the eigenenergy and $\psi_n(x)$ is the eigenfunction corresponding to the $n$-th state.
 
 ### Time-Dependent Schrödinger Equation (TDSE)
 The time evolution of a quantum state $\psi(x,t)$ is described by the Time-Dependent Schrödinger Equation:
 
-$$ i\hbar \frac{\partial}{\partial t} \psi(x,t) = \hat{H}(t) \psi(x,t) $$
+$$i\hbar \frac{\partial}{\partial t} \psi(x,t) = \hat{H}(t) \psi(x,t)$$
 
 If the Hamiltonian is time-independent, the formal solution is:
 
-$$ \psi(x,t) = \exp\left(-\frac{i \hat{H} t}{\hbar}\right) \psi(x,0) $$
+$$\psi(x,t) = \exp\left(-\frac{i \hat{H} t}{\hbar}\right) \psi(x,0)$$
 
 ## 2. Unit System and Atomic Units
 
@@ -35,7 +35,7 @@ When you provide a parameter with physical units (e.g., `1.0u"eV/nm^2"` or `-10.
 ### Discretization and the TISE
 To numerically solve the TISE, space is discretized into $N$ grid points with a uniform spacing $\Delta x$. The kinetic energy operator is approximated using a standard three-point central finite difference scheme:
 
-$$ \frac{\partial^2 \psi}{\partial x^2} \approx \frac{\psi_{i+1} - 2\psi_i + \psi_{i-1}}{\Delta x^2} $$
+$$\frac{\partial^2 \psi}{\partial x^2} \approx \frac{\psi_{i+1} - 2\psi_i + \psi_{i-1}}{\Delta x^2}$$
 
 This maps the continuous operator $\hat{H}$ to a discrete matrix $H$. Because the kinetic energy only couples nearest neighbors and the potential energy is purely diagonal, $H$ takes the form of a **symmetric tridiagonal matrix**. In Julia, we construct this efficiently using `LinearAlgebra.SymTridiagonal`.
 
@@ -46,7 +46,7 @@ For simulating the TDSE, especially in large domains or long times, the **Split-
 
 Using the symmetric Strang splitting, the time evolution operator is approximated as:
 
-$$ \exp\left(-i \hat{H} \Delta t\right) \approx \exp\left(-i \frac{\hat{V} \Delta t}{2}\right) \exp\left(-i \hat{T} \Delta t\right) \exp\left(-i \frac{\hat{V} \Delta t}{2}\right) + \mathcal{O}(\Delta t^3) $$
+$$\exp\left(-i \hat{H} \Delta t\right) \approx \exp\left(-i \frac{\hat{V} \Delta t}{2}\right) \exp\left(-i \hat{T} \Delta t\right) \exp\left(-i \frac{\hat{V} \Delta t}{2}\right) + \mathcal{O}(\Delta t^3)$$
 
 The algorithm proceeds as follows for each time step $\Delta t$:
 1. Apply half a step of the potential operator in position space.
