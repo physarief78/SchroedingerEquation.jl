@@ -30,7 +30,7 @@
 ### Installation
 ```julia
 using Pkg
-Pkg.add("SchroedingerEquation")
+Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")
 ```
 
 ### Basic Example: Harmonic Oscillator
@@ -61,11 +61,42 @@ Ground state energy: 1.8990771391438397e-10 (Atomic Units)
 using SchroedingerEquation
 using Base.Threads
 
-# Run 100 simulations in parallel with zero internal allocations
-Threads.@threads for i in 1:100
-    ws = SSFMWorkspace(psi_init, pot, dt)
-    propagate_ssfm(psi_init, pot, t_total, dt; workspace=ws)
+# 1. System Setup (Atomic Units)
+basis = RealSpaceGrid1D(-20.0, 20.0, 1024)
+pot = HarmonicPotential(0.01)
+dt, t_total = 0.1, 10.0
+
+# Initial Gaussian envelope (normalized)
+psi_env = @. exp(-basis.x^2 / 2) + 0im
+psi_env ./= sqrt(sum(abs2.(psi_env)) * basis.dx) 
+
+# Parameter to sweep: 100 different initial momenta
+p0_values = range(-2.0, 2.0, length=100)
+final_states = Vector{Vector{ComplexF64}}(undef, length(p0_values))
+
+println("Running on $(Threads.nthreads()) threads...")
+
+# 2. Parallel Parameter Sweep
+Threads.@threads for i in 1:length(p0_values)
+    
+    # Apply momentum kick to create this specific thread's initial state
+    psi_start = Wavefunction1D(psi_env .* exp.(im .* p0_values[i] .* basis.x), basis)
+    
+    # Each thread needs its own isolated FFT workspace!
+    ws = SSFMWorkspace(psi_start, pot, dt)
+    
+    # Propagate and save only the final array
+    history = propagate_ssfm(psi_start, pot, t_total, dt; workspace=ws)
+    final_states[i] = history[end].psi
 end
+
+println("Successfully completed 100 parallel simulations!")
+```
+
+**Output:**
+```console
+Running on n threads...
+Successfully completed 100 parallel simulations!
 ```
 
 ---
@@ -78,7 +109,7 @@ end
 
 1. Install the Python wrapper:
 ```bash
-pip install .
+pip install "git+https://github.com/physarief78/SchroedingerEquation.jl.git#egg=schroedingerequation&subdirectory=python"
 ```
 
 ### Python Example: TISE Solver
@@ -99,6 +130,16 @@ energies, wavefunctions = se.solve_tise(ham, 3)
 x = np.array(basis.x)
 plt.plot(x, np.abs(wavefunctions[:, 0])**2)
 plt.show()
+```
+### How to Run?
+```bash
+# in your project/code directiory
+# set
+$env:PYTHON_JULIACALL_PROJECT = "."
+$env:PYTHON_JULIACALL_EXE = "julia"
+
+# then run
+python your_project.py
 ```
 
 **Output:**
