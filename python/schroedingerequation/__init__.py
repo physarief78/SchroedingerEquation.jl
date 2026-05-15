@@ -12,25 +12,22 @@ _project_toml = os.path.join(_base_dir, "Project.toml")
 
 def _init_julia():
     try:
-        # Load Pkg
+        # Load Pkg and register the local project if we are in the source tree
         jl.eval("import Pkg")
-        
-        # If we are in a dev environment (local source tree), develop the package
         if os.path.exists(_project_toml):
             path = _base_dir.replace("\\", "/")
             jl.eval(f'Pkg.develop(path="{path}")')
         
-        # Load the package
+        # Load the package into Julia's Main namespace
         jl.eval("using SchroedingerEquation")
-        # Access the module object from Julia's Main namespace
         return jl.SchroedingerEquation
     except Exception as e:
-        # Fallback: try to add from GitHub
+        # Fallback: try to add from GitHub if local load fails
         try:
+            print(f"SchroedingerEquation.jl local load failed: {e}. Attempting fallback...")
             jl.eval("using SchroedingerEquation")
             return jl.SchroedingerEquation
         except:
-            print(f"SchroedingerEquation.jl failed to load: {e}")
             print("Attempting to install SchroedingerEquation.jl from GitHub...")
             jl.eval('Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")')
             jl.eval("using SchroedingerEquation")
