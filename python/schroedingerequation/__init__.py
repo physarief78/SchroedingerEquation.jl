@@ -16,27 +16,25 @@ def _init_julia():
         jl.eval("import Pkg")
         
         # If we are in a dev environment (local source tree), develop the package
-        # into the current JuliaCall environment.
         if os.path.exists(_project_toml):
             path = _base_dir.replace("\\", "/")
-            # Use Pkg.develop to ensure the local version is used
             jl.eval(f'Pkg.develop(path="{path}")')
         
         # Load the package
         jl.eval("using SchroedingerEquation")
-        return jl.eval("SchroedingerEquation")
+        # Access the module object from Julia's Main namespace
+        return jl.SchroedingerEquation
     except Exception as e:
-        # Fallback: try to add from GitHub if it's not local and not installed
+        # Fallback: try to add from GitHub
         try:
-            # Check if it's already installed before adding
             jl.eval("using SchroedingerEquation")
-            return jl.eval("SchroedingerEquation")
+            return jl.SchroedingerEquation
         except:
             print(f"SchroedingerEquation.jl failed to load: {e}")
             print("Attempting to install SchroedingerEquation.jl from GitHub...")
             jl.eval('Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")')
             jl.eval("using SchroedingerEquation")
-            return jl.eval("SchroedingerEquation")
+            return jl.SchroedingerEquation
 
 se = _init_julia()
 
@@ -44,16 +42,32 @@ se = _init_julia()
 def to_jl(x):
     return x
 
-# Export core types and functions
+# Export core types and functions from the module
 RealSpaceGrid1D = se.RealSpaceGrid1D
+Wavefunction1D = se.Wavefunction1D
+CustomPotential = se.CustomPotential
+CustomTimeDependentPotential = se.CustomTimeDependentPotential
+Hamiltonian1D = se.Hamiltonian1D
+
 HarmonicPotential = se.HarmonicPotential
 SquareWellPotential = se.SquareWellPotential
 OscillatingField = se.OscillatingField
 CombinedPotential = se.CombinedPotential
 ManolopoulosCAP = se.ManolopoulosCAP
+
 AbsorbingBoundary = se.AbsorbingBoundary
 PeriodicBoundary = se.PeriodicBoundary
 HardWallBoundary = se.HardWallBoundary
+
+# Functions
+probability_density = se.probability_density
+expectation_value = se.expectation_value
+strip_units = se.strip_units
+apply_units = se.apply_units
+build_momentum_operator = se.build_momentum_operator
+propagate_tdse = se.propagate_tdse
+propagate_ssfm = se.propagate_ssfm
+animate_evolution = se.animate_evolution
 
 def build_hamiltonian(basis, potential, hbar=None, m=None):
     """
@@ -84,6 +98,9 @@ def simulate_tdse(psi0, pot, dt, t_total, method="ssfm", **kwargs):
     """
     return se.simulate_tdse(psi0, pot, dt, t_total, method=method, **kwargs)
 
+# Smoke test
+assert hasattr(se, "RealSpaceGrid1D"), "Failed to load core types from SchroedingerEquation"
+
 # Unit helper
 def unit(u_str):
     """Helper to create Unitful units from strings."""
@@ -101,6 +118,14 @@ __all__ = [
     "AbsorbingBoundary",
     "PeriodicBoundary",
     "HardWallBoundary",
+    "probability_density",
+    "expectation_value",
+    "strip_units",
+    "apply_units",
+    "build_momentum_operator",
+    "propagate_tdse",
+    "propagate_ssfm",
+    "animate_evolution",
     "build_hamiltonian",
     "solve_tise",
     "simulate_tdse",
