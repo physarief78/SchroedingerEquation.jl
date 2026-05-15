@@ -11,27 +11,20 @@ _base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fi
 _project_toml = os.path.join(_base_dir, "Project.toml")
 
 def _init_julia():
+    """Load SchroedingerEquation.jl and return the module object."""
+    # juliapkg.json handles Pkg.develop automatically via "dev": true.
+    # We just need to call 'using' to load the module into Main.
     try:
-        # Load Pkg and register the local project if we are in the source tree
-        jl.eval("import Pkg")
-        if os.path.exists(_project_toml):
-            path = _base_dir.replace("\\", "/")
-            jl.eval(f'Pkg.develop(path="{path}")')
-        
-        # Load the package into Julia's Main namespace
-        jl.eval("using SchroedingerEquation")
+        jl.seval("using SchroedingerEquation")
         return jl.SchroedingerEquation
     except Exception as e:
-        # Fallback: try to add from GitHub if local load fails
-        try:
-            print(f"SchroedingerEquation.jl local load failed: {e}. Attempting fallback...")
-            jl.eval("using SchroedingerEquation")
-            return jl.SchroedingerEquation
-        except:
-            print("Attempting to install SchroedingerEquation.jl from GitHub...")
-            jl.eval('Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")')
-            jl.eval("using SchroedingerEquation")
-            return jl.SchroedingerEquation
+        # Fallback: try to install from GitHub
+        print(f"SchroedingerEquation.jl failed to load: {e}")
+        print("Attempting to install SchroedingerEquation.jl from GitHub...")
+        jl.seval("import Pkg")
+        jl.seval('Pkg.add(url="https://github.com/physarief78/SchroedingerEquation.jl")')
+        jl.seval("using SchroedingerEquation")
+        return jl.SchroedingerEquation
 
 se = _init_julia()
 
@@ -102,8 +95,8 @@ assert hasattr(se, "RealSpaceGrid1D"), "Failed to load core types from Schroedin
 def unit(u_str):
     """Helper to create Unitful units from strings."""
     # Ensure Unitful and UnitfulAtomic are loaded in Main
-    jl.eval(jl.Meta.parse("using Unitful, UnitfulAtomic"))
-    return jl.eval(jl.Meta.parse(u_str))
+    jl.seval("using Unitful, UnitfulAtomic")
+    return jl.seval(u_str)
 
 __all__ = [
     "RealSpaceGrid1D",
