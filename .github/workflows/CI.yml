@@ -51,13 +51,13 @@ jobs:
         run: |
           pip install numpy matplotlib juliacall
           pip install .
-          rm -f Manifest.toml
-          julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+          julia -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate(); Pkg.precompile()'
       - name: Run Python Tests
         env:
           JULIAPKG_EXE: julia
           JULIA_PROJECT: "@."
-          PYTHONJULIACALL_HANDLE_SIGNALS: "yes"
+          PYTHON_JULIACALL_AUTOLOAD_IPYTHON: "no"
+          PYTHON_JULIACALL_HANDLE_SIGNALS: "yes"
         run: python test/test_python.py
 
   docs:

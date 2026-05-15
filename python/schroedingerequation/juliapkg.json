@@ -1,5 +1,9 @@
 {
     "packages": {
+        "PythonCall": {
+            "uuid": "6099a3de-0909-46bc-b1f4-468b9a2dfc0d",
+            "version": "0.9"
+        },
         "Unitful": {
             "uuid": "1986cc42-f94f-5a68-af5c-568840ba703d",
             "version": "1"
