@@ -6,7 +6,6 @@ import unittest
 import numpy as np
 import os
 import sys
-from juliacall import Main as jl
 
 # Add the project root to sys.path so we can import schroedingerequation without installing
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "python")))
@@ -64,8 +63,7 @@ class TestPythonInterface(unittest.TestCase):
         # Test unit helper
         u = se.unit("1.0u\"eV\"")
         # In atomic units, 1 eV is approx 0.0367
-        # We need to parse before eval in the test too
-        val = jl.eval(jl.Meta.parse("Unitful.ustrip(UnitfulAtomic.auconvert(1.0u\"eV\"))"))
+        val = se.strip_units(u)
         self.assertAlmostEqual(float(val), 0.0367493, places=5)
 
 if __name__ == "__main__":

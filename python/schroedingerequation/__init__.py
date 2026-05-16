@@ -116,9 +116,7 @@ assert hasattr(se, "RealSpaceGrid1D"), "Failed to load core types from Schroedin
 # Unit helper
 def unit(u_str):
     """Helper to create Unitful units from strings."""
-    # Ensure Unitful and UnitfulAtomic are loaded in Main
-    jl.seval("using Unitful, UnitfulAtomic")
-    return jl.seval(u_str)
+    return jl.SchroedingerEquation.eval(jl.Meta.parse(u_str))
 
 __all__ = [
     "RealSpaceGrid1D",
