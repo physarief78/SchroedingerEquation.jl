@@ -68,18 +68,40 @@ def build_hamiltonian(basis, potential, hbar=None, m=None):
     if m is not None: kwargs['m'] = m
     return se.build_hamiltonian(basis, potential, **kwargs)
 
-def solve_tise(ham, n_states):
+def solve_tise(
+    ham,
+    n_states,
+    tol=None,
+    maxiter=None,
+    krylovdim=None,
+    verbosity=None,
+    return_info=False,
+):
     """
-    Solves the Time-Independent Schroedinger Equation.
+    Solves the Time-Independent Schroedinger Equation with optional Krylov controls.
     Returns (energies, wavefunctions) as numpy-friendly objects.
+    If return_info=True, also returns KrylovKit convergence information.
     """
-    energies, wavefunctions = se.solve_tise(ham, n_states)
+    kwargs = {}
+    if tol is not None: kwargs["tol"] = tol
+    if maxiter is not None: kwargs["maxiter"] = maxiter
+    if krylovdim is not None: kwargs["krylovdim"] = krylovdim
+    if verbosity is not None: kwargs["verbosity"] = verbosity
+    if return_info: kwargs["return_info"] = True
+
+    result = se.solve_tise(ham, n_states, **kwargs)
+    if return_info:
+        energies, wavefunctions, info = result
+    else:
+        energies, wavefunctions = result
     
     # Extract raw psi vectors from the list of Wavefunction1D objects
     # and stack them into a 2D NumPy array (points, states)
     psi_list = [np.array(wf.psi) for wf in wavefunctions]
     psi_matrix = np.column_stack(psi_list)
     
+    if return_info:
+        return np.array(energies), psi_matrix, info
     return np.array(energies), psi_matrix
 
 def simulate_tdse(psi0, pot, dt, t_total, method="ssfm", **kwargs):

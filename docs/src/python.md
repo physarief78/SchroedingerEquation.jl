@@ -34,7 +34,10 @@ pot = se.HarmonicPotential(se.unit("500.0u\"eV/nm^2\""))
 
 # 3. Solve the Time-Independent Schrödinger Equation (TISE)
 ham = se.build_hamiltonian(basis, pot)
-energies, psi = se.solve_tise(ham, 3)
+energies, psi = se.solve_tise(ham, 3, tol=1e-8, maxiter=500, krylovdim=40)
+
+# Optional: inspect Krylov convergence diagnostics
+energies, psi, info = se.solve_tise(ham, 3, tol=1e-10, return_info=True)
 
 # 4. Access results as NumPy arrays
 x = np.array(basis.x)
@@ -51,6 +54,7 @@ Physical units are handled via the `se.unit()` helper, which supports both stand
 - **Grid coordinates**: `np.array(basis.x)`
 - **Eigenenergies**: Returned as a standard 1D NumPy array.
 - **Wavefunctions**: Returned as a 2D NumPy array with shape `(n_points, n_states)`.
+- **TISE controls**: `solve_tise` accepts `tol`, `maxiter`, `krylovdim`, `verbosity`, and `return_info` for transparent Krylov solver studies.
 
 ## Demo Example
 A complete, professional example with high-resolution plotting is available in the repository at `examples/python_demo/src/main.py`.

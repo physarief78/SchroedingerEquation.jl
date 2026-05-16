@@ -9,9 +9,15 @@ Solve $H\psi = E\psi$ to find the stationary states (eigenstates) of the system.
 ```julia
 # Find the 5 lowest energy states
 energies, wavefunctions = solve_tise(ham, 5)
+
+# Tune Krylov convergence for methodological studies
+energies, wavefunctions = solve_tise(ham, 5; tol=1e-8, maxiter=500, krylovdim=40)
+
+# Inspect Krylov convergence diagnostics
+energies, wavefunctions, info = solve_tise(ham, 5; tol=1e-10, return_info=true)
 ```
 
-The TISE solver uses `KrylovKit.jl` for high-performance iterative diagonalization, making it suitable for very large grids.
+The TISE solver uses `KrylovKit.jl` for high-performance iterative diagonalization, making it suitable for very large grids. The `tol` keyword controls Krylov residual convergence, while `maxiter`, `krylovdim`, and `verbosity` expose additional algorithm controls for research and teaching workflows. Use `return_info=true` to inspect fields such as `info.converged`, `info.normres`, `info.numiter`, and `info.numops`.
 
 ## Time-Dependent (TDSE)
 
@@ -24,6 +30,8 @@ A stable, 2nd-order implicit method that preserves the norm of the wavefunction.
 ```julia
 psi_final = propagate_tdse(psi_init, ham, t_total, dt)
 ```
+
+For TDSE propagation, numerical accuracy is controlled primarily by the timestep `dt` and the chosen propagation method rather than by a Krylov tolerance.
 
 ### 2. Split-Step Fourier Method (SSFM)
 

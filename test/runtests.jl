@@ -31,6 +31,30 @@ using Base.Threads
         @test expectation_value(wavefunctions[1], x -> x) ≈ 0.0 atol=1e-5
     end
 
+    @testset "TISE Solver Controls" begin
+        basis = RealSpaceGrid1D(-10.0, 10.0, 500)
+        potential = HarmonicPotential(1.0)
+        ham = build_hamiltonian(basis, potential)
+
+        ground_energy, ground_state = solve_tise(ham, 1; tol=1e-6)
+        @test length(ground_energy) == 1
+        @test length(ground_state) == 1
+        @test isapprox(ground_energy[1], 0.5; atol=1e-2)
+
+        energies, wavefunctions, info = solve_tise(ham, 3; tol=1e-8, maxiter=300, krylovdim=30, return_info=true)
+        @test length(energies) == 3
+        @test length(wavefunctions) == 3
+        @test info.converged >= 3
+        @test length(info.normres) >= 3
+        @test info.numiter >= 0
+        @test info.numops > 0
+
+        @test_throws ArgumentError solve_tise(ham, 0)
+        @test_throws ArgumentError solve_tise(ham, 1; tol=0.0)
+        @test_throws ArgumentError solve_tise(ham, 1; maxiter=0)
+        @test_throws ArgumentError solve_tise(ham, 3; krylovdim=2)
+    end
+
     @testset "TDSE Solver" begin
         basis = RealSpaceGrid1D(-5.0, 5.0, 100)
         potential = CustomPotential(x -> 0.0) # Free particle

@@ -12,7 +12,7 @@
 
 - **🛡️ Rigorous Unit Handling**: Native integration with `Unitful.jl` and `UnitfulAtomic.jl`. Input parameters in `eV`, `nm`, `fs`, or `meV` with automatic conversion to internal atomic units.
 - **⚡ High-Performance Solvers**:
-  - **TISE**: $O(N)$ efficiency using specialized `SymTridiagonal` Hamiltonians and `KrylovKit`.
+  - **TISE**: $O(N)$ efficiency using specialized `SymTridiagonal` Hamiltonians and configurable `KrylovKit` convergence controls.
   - **TDSE (Unitary)**: Stable 2nd-order Crank-Nicolson propagation.
   - **TDSE (Spectral)**: Ultra-fast **Split-Step Fourier Method (SSFM)** for smooth potentials and periodic boundaries.
 - **🌀 Advanced Boundary Conditions**:
@@ -46,7 +46,10 @@ potential = HarmonicPotential(1.0u"eV/nm^2")
 
 # 3. Build Hamiltonian & Solve TISE
 ham = build_hamiltonian(basis, potential; hbar=1.0u"hbar", m=1.0u"me")
-energies, wavefunctions = solve_tise(ham, 5)
+energies, wavefunctions = solve_tise(ham, 5; tol=1e-8)
+
+# Optional: inspect Krylov convergence diagnostics
+energies, wavefunctions, info = solve_tise(ham, 5; tol=1e-10, maxiter=500, krylovdim=40, return_info=true)
 
 println("Ground state energy: ", energies[1], " (Atomic Units)")
 ```
@@ -124,7 +127,7 @@ pot = se.HarmonicPotential(se.unit("2.0u\"eV/nm^2\""))
 
 # 2. Build Hamiltonian and solve
 ham = se.build_hamiltonian(basis, pot)
-energies, wavefunctions = se.solve_tise(ham, 3)
+energies, wavefunctions = se.solve_tise(ham, 3, tol=1e-8, maxiter=500, krylovdim=40)
 
 # 3. Use results in NumPy/Matplotlib
 x = np.array(basis.x)
@@ -157,6 +160,8 @@ Ground state energy: 5.800139365314005e-05
 | **Crank-Nicolson** | $O(N)$ | General potentials, non-periodic boundaries, high accuracy. |
 | **SSFM (Spectral)** | $O(N \log N)$ | Smooth potentials, periodic systems, ultra-long simulations. |
 | **SymTridiagonal TISE**| $O(N)$ | Finding eigenstates of static 1D Hamiltonians. |
+
+For TISE calculations, `tol` controls the Krylov residual convergence tolerance. For TDSE propagation, accuracy is controlled primarily by the timestep `dt` and the selected propagation method.
 
 ---
 

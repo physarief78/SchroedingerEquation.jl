@@ -67,15 +67,38 @@ function build_momentum_operator(basis::RealSpaceGrid1D; hbar=1.0)
     return P_matrix
 end
 
+function _validate_tise_controls(n_states::Int, tol::Real, maxiter::Int, krylovdim::Int)
+    n_states > 0 || throw(ArgumentError("n_states must be positive, got $n_states"))
+    tol > 0 || throw(ArgumentError("tol must be positive, got $tol"))
+    maxiter > 0 || throw(ArgumentError("maxiter must be positive, got $maxiter"))
+    krylovdim >= n_states || throw(ArgumentError("krylovdim must be at least n_states ($n_states), got $krylovdim"))
+    return nothing
+end
+
 """
-    solve_tise(hamiltonian::Hamiltonian1D, n_states::Int)
-Solves the TISE for the lowest `n_states` energy levels.
-Returns eigenvalues (energies) and eigenvectors (wavefunctions).
+    solve_tise(hamiltonian::Hamiltonian1D, n_states::Int; tol=KrylovDefaults.tol[], maxiter=KrylovDefaults.maxiter[], krylovdim=KrylovDefaults.krylovdim[], verbosity=KrylovDefaults.verbosity[], return_info=false)
+Solves the TISE for the lowest `n_states` energy levels using KrylovKit.
+Returns eigenvalues (energies) and eigenvectors (wavefunctions). If
+`return_info=true`, also returns KrylovKit's convergence information.
+
+The Krylov solver stops when the residual norm reaches `tol`, rebuilding a
+Krylov subspace of size `krylovdim` up to `maxiter` times.
 """
-function solve_tise(hamiltonian::Hamiltonian1D, n_states::Int)
+function solve_tise(hamiltonian::Hamiltonian1D, n_states::Int;
+                    tol::Real=KrylovDefaults.tol[],
+                    maxiter::Int=KrylovDefaults.maxiter[],
+                    krylovdim::Int=KrylovDefaults.krylovdim[],
+                    verbosity::Int=KrylovDefaults.verbosity[],
+                    return_info::Bool=false)
+    _validate_tise_controls(n_states, tol, maxiter, krylovdim)
+
     H = hamiltonian.H_matrix
     # Use KrylovKit to find the smallest eigenvalues
-    vals, vecs, info = eigsolve(H, n_states, :SR) # :SR = Smallest Real
+    vals, vecs, info = eigsolve(H, n_states, :SR; tol=tol, maxiter=maxiter, krylovdim=krylovdim, verbosity=verbosity) # :SR = Smallest Real
+
+    if info.converged < n_states
+        @warn "TISE eigensolver did not converge all requested states" requested=n_states converged=info.converged tol=tol normres=info.normres numiter=info.numiter numops=info.numops
+    end
     
     energies = real.(vals[1:n_states])
     wavefunctions = [Wavefunction1D(vecs[i], hamiltonian.basis) for i in 1:n_states]
@@ -85,7 +108,7 @@ function solve_tise(hamiltonian::Hamiltonian1D, n_states::Int)
         normalize!(wf)
     end
     
-    return energies, wavefunctions
+    return return_info ? (energies, wavefunctions, info) : (energies, wavefunctions)
 end
 
 export build_hamiltonian, build_momentum_operator, solve_tise
